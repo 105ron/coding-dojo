@@ -1,74 +1,84 @@
 const assert = require('assert');
 
-function countNumber(number) {
-  var vacobularyForNumbers = {
+const countNumber = (number) => {
+
+  const onesAndTeensDictionary = {
+    0: '',
     1: 'one',
     3: 'three',
     7: 'seven',
+  };
+
+  const twentyAndAbove = {
+    0: '',
     20: 'twenty',
     30: 'thirty'
-  };
-  if (number > 30) {
-    return countNumber(30) + countNumber(number - 30);
-  }
-  if (number > 20 && number <= 29) {
-    return countNumber(20) + countNumber(number - 20);
   }
 
-  return vacobularyForNumbers[number].length;
+  const tens = [50, 40, 30, 20];
+
+  const tensNumber = tens.filter((x) => {
+    return number - x < 10 && number - x >= 0 ;
+  });
+
+  let bigNumber = tensNumber[0];
+  bigNumber ? number = number - bigNumber : bigNumber = 0;
+  let numberWord = twentyAndAbove[bigNumber] + onesAndTeensDictionary[number];
+  return numberWord.length;
+
 }
 
 describe('Number Letter Counts', function() {
-  it('return three when passed 1!', () => {
+  it('returns three when when the number is 1', () => {
     const expected = 3;
     const actual = countNumber(1);
 
     assert.equal(actual, expected);
   });
 
-  it('return five when passed 3!', () => {
+  it('returns five when the number is three', () => {
     const expected = 5;
     const actual = countNumber(3);
 
     assert.equal(actual, expected);
   });
 
-  it('return five when passed 7!', () => {
+  it('returns five when the number is seven', () => {
     const expected = 5;
     const actual = countNumber(7);
 
     assert.equal(actual, expected);
   });
 
-  it('return six when passed 20!', () => {
+  it('return six when the number is twenty', () => {
     const expected = 6;
     const actual = countNumber(20);
 
     assert.equal(actual, expected);
   });
 
-  it('return nine when passed 21!', () => {
+  it('return nine when the number is twenty one', () => {
     const expected = 9;
     const actual = countNumber(21);
 
     assert.equal(actual, expected);
   });
 
-  it('return eleven when passed 23!', () => {
+  it('return eleven when the number is twenty three!', () => {
     const expected = 11;
     const actual = countNumber(23);
 
     assert.equal(actual, expected);
   });
 
-  it('return six when passed 30!', () => {
+  it('return six when the number is thirty', () => {
     const expected = 6;
     const actual = countNumber(30);
 
     assert.equal(actual, expected);
   });
 
-  it('return eleven when passed 33!', () => {
+  it('return eleven when the number is thirty three', () => {
     const expected = 11;
     const actual = countNumber(33);
 
