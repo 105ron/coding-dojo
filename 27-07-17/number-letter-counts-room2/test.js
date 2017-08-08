@@ -1,76 +1,34 @@
 const assert = require('assert');
 
-const countNumber = (number) => {
+const countNumber = (num) => {
+  const onesAndTeens = [0, 3, 3, 5, 4, 4, 3, 5, 5, 4, 3, 6, 6, 8, 8, 7, 7, 9, 8, 8]; 
+  const twentyPlus = [0, 0, 6, 6, 5, 5, 5, 7, 6, 6]; 
+  const ones = num % 10; 
+  const tens = parseInt(num / 10); 
+  const hundreds = parseInt(tens / 10); 
+  const remains = num % 100; 
+  
+  if (num === 1000) return 11; 
+  if (tens === 1) { 
+    return onesAndTeens[num]; 
+  } 
+  if (tens > 9) { 
+    const wholeNumber = remains ? 10 : 7;
+    return countNumber(hundreds) + wholeNumber + countNumber(remains); 
+  } 
+  return twentyPlus[tens] + onesAndTeens[ones]; 
+}; 
+
+const sumAll = function (num) { 
+  if ([...arguments].some(n => n < 1 || n > 1000)) { 
+    throw new Error("Number out of range"); 
+  } 
+  const finish = arguments[1] || num; 
+  const start = (arguments[1]) ? num : 1; 
+  return Array.from(Array(finish - start + 1), (_,i) => i + start) .reduce((a, c) => a + countNumber(c), 0); 
+};
 
 
-  let bigNumber;
-  let numberWord;
-  let numberRange;
-  let numberString;
-  let numberArray;
-  const onesAndTeensDictionary = {
-    0: '',
-    1: 'one',
-    2: 'two',
-    3: 'three',
-    4: 'four',
-    5: 'five',
-    6: 'six',
-    7: 'seven',
-    8: 'eight',
-    9: 'nine',
-    10: 'ten',
-    11: 'eleven',
-    12: 'twelve',
-    13: 'thirteen',
-    14: 'fourteen',
-    15: 'fifteen',
-    16: 'sixteen',
-    17: 'seventeen',
-    18: 'eighteen',
-    19: 'nineteen'
-  };
-
-  const twentyAndAbove = {
-    0: '',
-    20: 'twenty',
-    30: 'thirty',
-    40: 'forty',
-    50: 'fifty',
-    60: 'sixty',
-    70: 'seventy',
-    80: 'eighty',
-    90: 'ninety'
-  }
-
-  const tens = [90, 80, 70, 60, 50, 40, 30, 20];
-
-  const range = (arr) => {
-    let returnArr = [];
-
-    for (let i = parseInt(arr[0]); i <= parseInt(arr[1]); i += 1) {
-        returnArr.push(i);
-    }
-    return returnArr;
-  };
-
-  numberString = number.toString();
-  numberArray = numberString.split(',');
-  numberRange = (numberArray.length > 1) ? range(numberArray) : [...numberArray];
-
-  let c = numberRange.map( (currentValue) => {
-    const tensNumber = tens.filter((n) => {
-      return currentValue - n < 10 && currentValue - n >= 0 ;
-    });
-    bigNumber = tensNumber[0]; // 20, 30, 40 or 50 if number is over 20
-    bigNumber ? currentValue = currentValue - bigNumber : bigNumber = 0;
-    numberWord = twentyAndAbove[bigNumber] + onesAndTeensDictionary[currentValue];
-    return numberWord.length;
-  });
-  return c.reduce( (sum, value) => {
-    return sum + value; 
-  });
-}
 describe('Number Letter Counts', function() {
   it('returns three when when the number is 1', () => {
     const expected = 3;
@@ -128,16 +86,51 @@ describe('Number Letter Counts', function() {
     assert.equal(actual, expected);
   });
 
+  it('return 10 when the number is one hundred', () => {
+    const expected = 10;
+    const actual = countNumber(100);
+
+    assert.equal(actual, expected);
+  });
+
+  it('return 16 when the number is one hundred and one', () => {
+    const expected = 16;
+    const actual = countNumber(101);
+
+    assert.equal(actual, expected);
+  });
+
+  it('return 21 when the number is one hundred and thirteen', () => {
+    const expected = 21;
+    const actual = countNumber(113);
+
+    assert.equal(actual, expected);
+  });
+
   it('given a range it returns the sum of the letter counts', () => {
     const expected = 11;
-    const actual = countNumber('1, 3');
+    const actual = sumAll(1,3);
+
+    assert.equal(actual, expected);
+  });
+
+  it('given a range starting at a number other than one it returns the correct number count', () => {
+    const expected = 12;
+    const actual = sumAll(2,4);
 
     assert.equal(actual, expected);
   });
   
   it('count letter from one to 99', () => {
     const expected = 854;
-    const actual = countNumber('1, 99');
+    const actual = sumAll(99);
+
+    assert.equal(actual, expected);
+  });
+
+  it('count letter from one to 1000', () => {
+    const expected = 21124;
+    const actual = sumAll(1000);
 
     assert.equal(actual, expected);
   });
